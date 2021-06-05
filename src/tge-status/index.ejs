@@ -1,0 +1,507 @@
+﻿<% include ../helpers.ejs %>
+<div>
+    <section class="blc-kyc bg-blue pt-5" id="tge-status">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="card-registration" class="card shadow">
+                        <div class="card-header text-center bg-green">
+                            <h2>Main-sale Token Generation Event Status</h2>
+                            <p class="hidden">ETH address: <a href="#" target="_blank" rel="noopener"></a></p>
+                        </div>
+                        <div class="card-body bg-light-green">
+                            <div class="alert alert-primary alert-unlock hidden" role="alert">
+                                <strong>Wallet locked.</strong>
+                                Please unlock your Ethereum Wallet (e.g. MetaMask).
+                            </div>
+
+                            <div class="alert alert-primary alert-network hidden" role="alert">
+                                <strong>Wrong Ethereum network</strong>
+                                The Asure Network main-sale will take place in the Ethereum Mainnet.
+                                Please ensure you have selected the Ethereum Mainnet in your wallet (e.g. MetaMask)
+                            </div>
+
+                            <div class="form-addr-search hidden">
+                                <form class="form-inline">
+                                    <div class="flex-grow-1">
+                                        <label class="sr-only" for="ethereumAddress">Ethereum address</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <div class="input-group-text">@</div>
+                                            </div>
+                                            <input type="text" class="form-control form-control"
+                                                   id="ethereumAddress" placeholder="Insert your Ethereum address">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn btn-primary btn-update-addr">
+                                        Check your Registration
+                                    </button>
+                                </form>
+                            </div>
+
+                            <form class="form-result hidden">
+                                <div class="row">
+                                    <div class="col-xl-3 col-sm-6 d-flex pt-3">
+                                        <div class="card flex-fill">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title text-uppercase">
+                                                    <span data-toggle="popover" title="" data-placement="bottom"
+                                                          data-trigger="hover"
+                                                          data-content="You need to install the MetaMask browser plugin or another Web3 compatible browser."
+                                                          data-original-title="Web3 compatible Browser"><strong>Web3 Browser</strong></span>
+                                                </h5>
+                                                <div class="card-text align-items-center">
+                                                    <input type="text" readonly
+                                                           class="form-control-plaintext text-center"
+                                                           value="YES">
+                                                </div>
+                                            </div>
+                                            <a class="btn btn-primary btn-block text-uppercase"
+                                               href="https://metamask.io/" target="_blank"
+                                               rel="noopener">
+                                                INSTALL METAMASK
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 d-flex pt-3">
+                                        <div class="card flex-fill">
+                                            <div class="card-body text-center">
+                                                <h5 class="card-title text-uppercase">
+                                                    <span data-toggle="popover" title="" data-placement="bottom"
+                                                          data-trigger="hover" data-content="Our team will start the Whitelisting on July 30th 2019. We will whitelist all addresses that have been registered with our
+                                                    KYC process and after our team has verified the correctness of your registration."
+                                                          data-original-title="Whitelisted"><strong>Whitelisted</strong></span>
+                                                </h5>
+                                                <div class="card-text align-items-center">
+                                                    <input type="text" readonly
+                                                           class="form-control-plaintext text-center"
+                                                           id="isWhitelisted"
+                                                           value="">
+                                                </div>
+                                            </div>
+                                            <a class="btn btn-action btn-block text-uppercase" href="/kyc"
+                                               target="_blank"
+                                               rel="noopener">
+                                                Register for TGE
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 d-flex pt-3">
+                                        <div class="card flex-fill">
+                                            <div class="card-body d-flex flex-column text-center">
+                                                <h5 class="card-title text-uppercase">Main-sale open</h5>
+                                                <div class="card-text align-items-center">
+                                                    <input type="text" readonly
+                                                           class="form-control-plaintext text-center" id="isOpen"
+                                                           value="">
+                                                    <small class="form-text text-muted text-center">
+                                                        The Main-sale will take place from December 1st to December 31th
+                                                        2019.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-sm-6 d-flex pt-3">
+                                        <div class="card flex-fill">
+                                            <div class="card-body d-flex flex-column text-center">
+                                                <h5 class="card-title text-uppercase">ASR Token Balance</h5>
+                                                <div class="card-text align-items-center">
+                                                    <input type="text" readonly
+                                                           class="form-control-plaintext text-center"
+                                                           id="balance"
+                                                           value="">
+                                                </div>
+                                            </div>
+                                            <button type="submit"
+                                                    class="btn btn-primary btn-block btn-add-token-metamask text-uppercase">
+                                                Add to MetaMask
+                                            </button>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="buy-token">
+                                    <hr>
+                                    <div class="form-group row">
+                                        <label for="amountEth" class="col-md-3 col-form-label">Buy ASR token</label>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="number" id="amountEth" class="form-control" value="1"
+                                                       min="0.5" max="50000" step="1">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"
+                                                          data-toggle="popover" title="" data-placement="bottom"
+                                                          data-trigger="hover"
+                                                          data-content="The amount of ETH you want to buy ASR token for."
+                                                          data-original-title="ETH"
+                                                    >ETH</span>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                                You receive a 15% bonus until December 15th.
+                                            </small>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label for="amountAsr" class="col-md-3 col-form-label"></label>
+                                        <div class="col-md-6">
+                                            <div class="input-group">
+                                                <input type="number" id="amountAsr" readonly class="form-control"
+                                                       value="100">
+                                                <div class="input-group-append">
+                                                    <span class="input-group-text"
+                                                          data-toggle="popover" title="" data-placement="bottom"
+                                                          data-trigger="hover"
+                                                          data-content="The amount of ASR token you receive."
+                                                          data-original-title="ASR"
+                                                    >ASR</span>
+                                                </div>
+                                            </div>
+                                            <small class="form-text text-muted">
+                                            </small>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <small class="form-text text-muted">
+
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" id="termOfUse">
+                                                <label class="form-check-label" for="termOfUse">
+                                                    I agree to the <a href="/asure.network.tge.terms.en.pdf">Terms of Use</a> (including purchaser's
+                                                    citizenship and/or residency) and <a href="/kyc_policy" target="_blank" rel="noopener">KYC policy</a>.
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="holdPrivKey">
+                                                <label class="form-check-label" for="holdPrivKey">
+                                                    I confirm that I hold the private key to this Ethereum address.
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="sendingEth">
+                                                <label class="form-check-label" for="sendingEth">
+                                                    I acknowledge that I can only participate in the TGE by sending ETH.
+                                                </label>
+                                            </div>
+
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value=""
+                                                       id="noExchangeAddress">
+                                                <label class="form-check-label" for="noExchangeAddress">
+                                                    I confirm that this address can handle ERC-20 tokens and is not an
+                                                    exchange address.
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-md-4 offset-md-5">
+                                            <a class="btn btn-primary btn-block btn-buy text-uppercase disabled"
+                                               href="#"
+                                               target="_blank" rel="noopener">
+                                                Buy ASR Tokens
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row mt-5" style="font-size: .875rem;">
+                                        <div class="col-md-6 offset-md-3">
+                                            <div class="alert alert-primary alert-buy" role="alert">
+                                                The following requirements have to be met to buy ASR token:
+                                                <ul>
+                                                    <li>The Asure Network main-sale is open.</li>
+                                                    <li>You have installed the <a href="https://metamask.io/">MetaMask
+                                                            Browser plugin</a></li>
+                                                    <li>You have successfully registered with our KYC process.</li>
+                                                    <li>You have accepted the <a href="#">Terms of Use</a> and <a
+                                                                href="#">Privacy Policy</a>
+                                                    </li>
+                                                    <li>Your ETH address has been whitelisted by our team.</li>
+                                                </ul>
+                                            </div>
+
+                                            <div class="alert alert-primary alert-loading hidden" role="alert">
+                                                <strong>Please wait ...</strong>
+                                                <p>Your transaction is being processed by the Ethereum Mainnet.</p>
+
+                                                <div id="circularG" style="margin: 0 auto;">
+                                                    <div id="circularG_1" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_2" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_3" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_4" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_5" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_6" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_7" class="circularG">
+                                                    </div>
+                                                    <div id="circularG_8" class="circularG">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Buy Success -->
+            <div class="modal fade" id="modal-buy-success" tabindex="-1" role="dialog"
+                 aria-labelledby="modal-buy-success" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Transaction successful</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <strong>Congratulations!</strong>
+                            <p>You successfully participated in the Asure Network main-sale.</p>
+                            <a href="#" target="_blank" rel="noopener" class="text-break etherscanUrl">
+                                View transaction on Etherscan
+                            </a>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="modal-buy-failure" tabindex="-1" role="dialog"
+                 aria-labelledby="modal-buy-failure" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Transaction failed</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            An error occured while trying to buy ASR tokens.
+                            <a href="#" target="_blank" rel="noopener" class="text-break etherscanUrl">
+                                View failed transaction on Etherscan
+                            </a>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 offset-md-4 text-center">
+                    <a href="https://callisto.network/smart-contract-audit/" target="_blank" rel="noopener">
+                        <img src="<%= fixUrl(current.path, 'content/img/partners/callisto-badge.webp') %>"
+                         alt="Security Audit by Callisto Network"
+                         class="img-fluid mt-5 mb-5">
+                    </a>
+                </div>
+            </div>
+
+            <%- partial("../shared/_social_row") %>
+        </div>
+    </section>
+</div>
+
+<style>
+    #circularG {
+        position: relative;
+        width: 128px;
+        height: 128px
+    }
+
+    .circularG {
+        position: absolute;
+        background-color: #58c9c4;
+        width: 29px;
+        height: 29px;
+        -moz-border-radius: 19px;
+        -moz-animation-name: bounce_circularG;
+        -moz-animation-duration: 1.04s;
+        -moz-animation-iteration-count: infinite;
+        -moz-animation-direction: normal;
+        -webkit-border-radius: 19px;
+        -webkit-animation-name: bounce_circularG;
+        -webkit-animation-duration: 1.04s;
+        -webkit-animation-iteration-count: infinite;
+        -webkit-animation-direction: normal;
+        -ms-border-radius: 19px;
+        -ms-animation-name: bounce_circularG;
+        -ms-animation-duration: 1.04s;
+        -ms-animation-iteration-count: infinite;
+        -ms-animation-direction: normal;
+        -o-border-radius: 19px;
+        -o-animation-name: bounce_circularG;
+        -o-animation-duration: 1.04s;
+        -o-animation-iteration-count: infinite;
+        -o-animation-direction: normal;
+        border-radius: 19px;
+        animation-name: bounce_circularG;
+        animation-duration: 1.04s;
+        animation-iteration-count: infinite;
+        animation-direction: normal;
+    }
+
+    #circularG_1 {
+        left: 0;
+        top: 50px;
+        -moz-animation-delay: 0.39s;
+        -webkit-animation-delay: 0.39s;
+        -ms-animation-delay: 0.39s;
+        -o-animation-delay: 0.39s;
+        animation-delay: 0.39s;
+    }
+
+    #circularG_2 {
+        left: 14px;
+        top: 14px;
+        -moz-animation-delay: 0.52s;
+        -webkit-animation-delay: 0.52s;
+        -ms-animation-delay: 0.52s;
+        -o-animation-delay: 0.52s;
+        animation-delay: 0.52s;
+    }
+
+    #circularG_3 {
+        top: 0;
+        left: 50px;
+        -moz-animation-delay: 0.65s;
+        -webkit-animation-delay: 0.65s;
+        -ms-animation-delay: 0.65s;
+        -o-animation-delay: 0.65s;
+        animation-delay: 0.65s;
+    }
+
+    #circularG_4 {
+        right: 14px;
+        top: 14px;
+        -moz-animation-delay: 0.78s;
+        -webkit-animation-delay: 0.78s;
+        -ms-animation-delay: 0.78s;
+        -o-animation-delay: 0.78s;
+        animation-delay: 0.78s;
+    }
+
+    #circularG_5 {
+        right: 0;
+        top: 50px;
+        -moz-animation-delay: 0.91s;
+        -webkit-animation-delay: 0.91s;
+        -ms-animation-delay: 0.91s;
+        -o-animation-delay: 0.91s;
+        animation-delay: 0.91s;
+    }
+
+    #circularG_6 {
+        right: 14px;
+        bottom: 14px;
+        -moz-animation-delay: 1.04s;
+        -webkit-animation-delay: 1.04s;
+        -ms-animation-delay: 1.04s;
+        -o-animation-delay: 1.04s;
+        animation-delay: 1.04s;
+    }
+
+    #circularG_7 {
+        left: 50px;
+        bottom: 0;
+        -moz-animation-delay: 1.17s;
+        -webkit-animation-delay: 1.17s;
+        -ms-animation-delay: 1.17s;
+        -o-animation-delay: 1.17s;
+        animation-delay: 1.17s;
+    }
+
+    #circularG_8 {
+        left: 14px;
+        bottom: 14px;
+        -moz-animation-delay: 1.3s;
+        -webkit-animation-delay: 1.3s;
+        -ms-animation-delay: 1.3s;
+        -o-animation-delay: 1.3s;
+        animation-delay: 1.3s;
+    }
+
+    @-moz-keyframes bounce_circularG {
+        0% {
+            -moz-transform: scale(1)
+        }
+
+        100% {
+            -moz-transform: scale(.3)
+        }
+
+    }
+
+    @-webkit-keyframes bounce_circularG {
+        0% {
+            -webkit-transform: scale(1)
+        }
+
+        100% {
+            -webkit-transform: scale(.3)
+        }
+
+    }
+
+    @-ms-keyframes bounce_circularG {
+        0% {
+            -ms-transform: scale(1)
+        }
+
+        100% {
+            -ms-transform: scale(.3)
+        }
+
+    }
+
+    @-o-keyframes bounce_circularG {
+        0% {
+            -o-transform: scale(1)
+        }
+
+        100% {
+            -o-transform: scale(.3)
+        }
+
+    }
+
+    @keyframes bounce_circularG {
+        0% {
+            transform: scale(1)
+        }
+
+        100% {
+            transform: scale(.3)
+        }
+
+    }
+
+</style>

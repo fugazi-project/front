@@ -1,0 +1,324 @@
+<script charset="utf-8"
+        src="https://cdn.ethers.io/scripts/ethers-v4.min.js"
+        type="text/javascript">
+</script>
+<script charset="utf-8"
+        src="/js/libs/moment-with-locales.min.js"
+        type="text/javascript">
+</script>
+<script>
+    /*
+     * From https://stackoverflow.com/questions/4656843/jquery-get-querystring-from-url
+     */
+    function getUrlVars() {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+
+    function getAddress() {
+        var params = getUrlVars();
+        if (!params.hasOwnProperty('q')) {
+            throw Error('No ETH address specified.');
+        }
+
+        try {
+            return ethers.utils.getAddress(params.q);
+        } catch (ex) {
+            console.warn(ex);
+            throw Error('Invalid ETH address specified.');
+        }
+    }
+
+    function createAsureTokenContract(provider, tokenData) {
+        var abi = tgeContractsAbis.AsureToken;
+        var address = tokenData.addr;
+
+        return new ethers.Contract(address, abi, provider);
+    }
+
+    function createMainSaleContract(providerOrSigner, crowdsaleData) {
+        var abi = tgeContractsAbis.AsureCrowdsale;
+        var address = crowdsaleData.addr;
+
+        return new ethers.Contract(address, abi, providerOrSigner);
+    }
+
+    /**
+     * See https://metamask.github.io/metamask-docs/Best_Practices/Registering_Your_Token
+     * See https://github.com/estebanmino/EIPs/blob/master/EIPS/eip-747.md
+     */
+    function suggestTokenInMetaMask(provider, tokenData) {
+        return provider.send('metamask_watchAsset', {
+            type: 'ERC20',
+            options: {
+                address: tokenData.addr,
+                symbol: tokenData.symbol,
+                decimals: tokenData.decimals,
+                image: 'data:image/png;base64,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'
+            }
+        }).then(function (res) {
+            console.log('suggestTokenInMetaMask', res);
+        }, function (err) {
+            console.error('suggestTokenInMetaMask', err);
+        });
+    }
+
+    function buyTokens(mainSale, beneficiary, ethAmount) {
+        return mainSale.buyTokens(beneficiary, {
+            gasLimit: 750000,
+            value: ethers.utils.parseEther(ethAmount),
+        }).then(function onBuyTxResolved(tx) {
+            return tx.wait().then(function () {
+                return tx.hash;
+            }, function () {
+                return Promise.reject(tx.hash);
+            });
+        }, function onBuyTxRejected(ex) {
+            return Promise.reject(null);
+        });
+    }
+
+    function updateCrowdsaleInfo(result) {
+        var $form = $('.form-result');
+        var $header = $('.card-header');
+
+        $header.find('p').show();
+        $header.find('p a').text(result.addr);
+        $header.find('p a').attr('href', 'https://etherscan.io/address/' + result.addr);
+
+        $form.find('#isOpen').val(result.isOpen ? 'Yes' : 'No');
+        $form.find('#isWhitelisted').val(result.isWhitelisted ? 'Yes' : 'No');
+        $form.find('#balance').val(result.balance);
+
+
+        $form.show();
+    }
+
+    function createEthersProvider() {
+        if ((typeof window.ethereum !== 'undefined') || (typeof window.web3 !== 'undefined')) {
+
+            // Web3 browser user detected. You can now use the provider.
+            const provider = window['ethereum'] || window.web3.currentProvider
+
+            let providerName = 'Unknown';
+            if (provider.isMetaMask) {
+                providerName = 'MetaMask';
+            } else if (provider.isStatus) {
+                providerName = 'Status.im';
+            }
+
+            if (typeof provider.enable === 'function') {
+                console.log(providerName + ' detected. Enabling ...');
+
+                var $unlock = $('.alert-unlock');
+                $unlock.show();
+                return provider.enable().then(function () {
+                    if (typeof provider.on === 'function') {
+                        provider.on('accountsChanged', function () {
+                            console.log(providerName + ' accounts changed. Reloading page ...');
+                            location.reload();
+                        });
+
+                        provider.on('networkChanged', function () {
+                            console.log(providerName + ' network changed. Reloading page ...');
+                            location.reload();
+                        });
+                    }
+
+                    $unlock.hide();
+                    console.log(providerName + ' is enabled. Using ethers Web3Provider.');
+                    return new ethers.providers.Web3Provider(provider);
+                }, function () {
+                    $unlock.hide();
+                    console.log(providerName + ' is disabled. Using ethers DefaultProvider.');
+                    return ethers.getDefaultProvider();
+                });
+            }
+
+            console.log('Web3 provider detected. Using ethers Web3Provider.');
+            return Promise.resolve(new ethers.providers.Web3Provider(provider));
+        }
+
+        console.log('No Web3 provider detected. Using ethers DefaultProvider.');
+        return Promise.resolve(ethers.getDefaultProvider());
+    }
+
+    function loadMainSaleData(provider, addr, tgeData) {
+        var mainSale = createMainSaleContract(provider, tgeData.mainSale);
+        var token = createAsureTokenContract(provider, tgeData.token);
+
+        var promises = [
+            mainSale.isOpen().catch(function (ex) {
+                console.error('isOpen', ex);
+                throw ex;
+            }),
+            mainSale.isWhitelisted(addr).catch(function (ex) {
+                console.error('isWhitelisted', ex);
+                throw ex;
+            }),
+            token.balanceOf(addr).then(function (balance) {
+                return ethers.utils.formatEther(balance);
+            }).catch(function (ex) {
+                console.error('balanceOf', ex);
+                throw ex;
+            }),
+        ];
+        return Promise.all(promises).then(function (resolved) {
+            var result = {
+                addr: addr,
+                isOpen: resolved[0],
+                isWhitelisted: resolved[1],
+                balance: resolved[2]
+            }
+
+            console.log('MainSale isOpen', result.isOpen);
+            console.log('MainSale isWhitelisted', result.isWhitelisted);
+            console.log('ASR balance', result.balance);
+
+            return result;
+        });
+    }
+
+    function getCurrentCrowdsaleRate(crowdsaleData, dateFormat) {
+        var bonusTime = moment(crowdsaleData.bonusTime, dateFormat);
+
+        if (moment().isSameOrBefore(bonusTime)) {
+            return crowdsaleData.bonusRate;
+        }
+
+        return crowdsaleData.defaultRate;
+    }
+
+    function ensureCorrectNetwork(provider) {
+        return provider.getNetwork().then(function (network) {
+            console.log('Selected Network', network);
+            switch (network.chainId) {
+                case 1:          // mainnet
+                //case 4:          // rinkeby testnet
+                case 1234567890: // local testnet (ganache)
+                    return {chainId: network.chainId, provider: provider};
+                default:
+                    throw new Error('Invalid chainId: ' + network.chainId);
+            }
+        });
+    }
+
+    function loadTgeData(options) {
+        if (!(window.availableTgeData && window.availableTgeData.hasOwnProperty(options.chainId))) {
+            return Promise.reject(new Error('Loading tge data for chainId ' + options.chainId + ' failed.'));
+        }
+
+        options.tgeData = window.availableTgeData[options.chainId];
+        console.log('Loaded tge data', options.tgeData);
+        return Promise.resolve(options);
+    }
+
+    function createEtherscanUrl(chainId, txHash) {
+        var networkPrefix = chainId === 4 ? 'rinkeby.' : '';
+
+        return 'https://' + networkPrefix + 'etherscan.io/tx/' + txHash;
+    }
+
+    $(function () {
+        createEthersProvider()
+            .then(ensureCorrectNetwork)
+            .catch(function onEnsureCorrectNetworkReject(ex) {
+                $('.alert-network').show();
+                throw ex;
+            })
+            .then(loadTgeData)
+            .then(function (options) {
+                var provider = options.provider;
+                var tgeData = options.tgeData;
+
+                var addr = null;
+                try {
+                    addr = getAddress();
+                } catch (ex) {
+                    var $addrSearch = $('.form-addr-search')
+                    $addrSearch.show();
+                    $addrSearch.find('.btn-update-addr').click(function (evt) {
+                        evt.preventDefault();
+                        var newAddr = $addrSearch.find('#ethereumAddress').val();
+                        window.location.href = '/tge-status?q=' + newAddr;
+                    });
+                    return;
+                }
+
+                loadMainSaleData(provider, addr, tgeData).then(function (result) {
+                    $('.btn-add-token-metamask').click(function (evt) {
+                        evt.preventDefault();
+                        suggestTokenInMetaMask(provider, tgeData.token);
+                    });
+
+                    updateCrowdsaleInfo(result);
+
+
+                    var $amountEth = $('#amountEth');
+                    var $amountAsr = $('#amountAsr');
+                    var $buy = $('.btn-buy');
+
+                    $amountAsr.val($amountEth.val() * getCurrentCrowdsaleRate(tgeData.mainSale, tgeData.dateFormat));
+                    $amountEth.change(function () {
+                        $amountAsr.val($amountEth.val() * getCurrentCrowdsaleRate(tgeData.mainSale, tgeData.dateFormat));
+                    });
+
+                    $('#termOfUse, #holdPrivKey, #sendingEth, #noExchangeAddress').change(function () {
+                        var $alert = $('.alert-buy');
+
+                        result.isUserAgreeingToTgeConditions =
+                            $('#termOfUse').is(':checked') &&
+                            $('#holdPrivKey').is(':checked') &&
+                            $('#sendingEth').is(':checked') &&
+                            $('#noExchangeAddress').is(':checked');
+
+                        var isDebug = getUrlVars().hasOwnProperty('debug');
+                        if ((isDebug || (result.isWhitelisted && result.isOpen && result.isUserAgreeingToTgeConditions)) && typeof provider.getSigner === "function") {
+                            $buy.removeClass('disabled');
+                            $alert.hide();
+                        } else {
+                            $buy.addClass('disabled');
+                            $alert.show();
+                        }
+                    });
+
+                    $buy.click(function (evt) {
+                        evt.preventDefault();
+                        var $loading = $('.alert-loading');
+                        $loading.show();
+
+                        var mainSale = createMainSaleContract(provider.getSigner(), tgeData.mainSale);
+                        buyTokens(mainSale, result.addr, $amountEth.val()).then(
+                            function onBuyTokensResolved(txHash) {
+                                var etherscanUrl = createEtherscanUrl(options.chainId, txHash);
+                                var $modal = $('#modal-buy-success');
+                                var $etherscanUrl = $modal.find('.etherscanUrl');
+                                $etherscanUrl.attr('href', etherscanUrl);
+                                $modal.modal('show');
+                            }, function onBuyTokensRejected(txHash) {
+                                if (txHash) {
+                                    var etherscanUrl = createEtherscanUrl(options.chainId, txHash);
+                                    var $modal = $('#modal-buy-failure');
+                                    var $etherscanUrl = $modal.find('.etherscanUrl');
+                                    $etherscanUrl.attr('href', etherscanUrl);
+                                    $modal.modal('show');
+                                }
+                            }
+                        ).finally(function onBuyTokensFinally() {
+                            $loading.hide();
+                        });
+                    });
+                }, function onLoadMainSaleDataReject(ex) {
+                    console.error(ex);
+                });
+            }, function onCreateEthersProviderReject(ex) {
+                console.error(ex);
+            });
+    });
+</script>
