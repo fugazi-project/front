@@ -1,0 +1,74 @@
+{
+  "sitemap.xml": {
+    "layout": false
+  },
+  "faq": [
+    {
+      "q": "What exactly is your business model?",
+      "a": "Just as Bitcoin does not belong to any organization but aims for decentralization, so we do not have a bussines model but want to make social insurance a way out in a decentralized network so that the benefits of the new technology can serve the common good to improve people's lives."
+    },
+    {
+      "q": "What is Asure Network?",
+      "a": "Asure is a a network for decentralized social security applications, powered by distributed ledger                 technology innovation."
+    },
+    {
+      "q": "Which blockchain will you use?",
+      "a": "We are are developing a new blockchain for social security applications wich will be connected via bridges to other public blockchains like ethereum-blockchain, binnace-blockchain, polkadot-blockchain, etc."
+    },
+    {
+      "q": "How can I buy ASR tokens?",
+      "a": "The first to <a href=\"https://asure.network/kyc\">sign up</a> for whitelisting. <br/> From December 1st to December 31th there will be smart contract addresse on this website."
+    },
+    {
+      "q":"What cryptocurrencies are accepted in the token sale?",
+      "a":"ETH is the only cryptocurrency accepted during the token sale in exchange for ASR tokens. You will be                 required to have an Ethereum wallet to participate in the token sale. ASR are Ethereum derived tokens. If you hold BTC or some other cryptocurrency it can be exchanged for ETH and used to participate in the token sale."
+    },
+    {
+      "q": "What does the token do?",
+      "a": "The ASR token is a utility token. It is implemented as an Ethereum smart contract and supports the ERC-20 token standards. The token will be use by Network Validators as well as Service Providers to participate as stakers in the proof-of-stake consensus mechanisms of the Asure network."
+    },
+    {
+      "q": "What is an ERC20 token?",
+      "a": "An ERC20 token is a blockchain-based asset with similar functionality to bitcoin, ether, and bitcoin                cash: it can hold value and be sent and received."
+    },
+    {
+      "q": "Do you have a fixed supply of ASR tokens?",
+      "a": "Yes. See website for more details."
+    },
+    {
+      "q":"Will the price of your token rise?",
+      "a":"We cannot comment on that. All we can say is that basic economics dictate that if there is a fixed supply of an item and social security transactions, and the demand for it rises, then the price will rise accordingly."
+    },
+    {
+      "q": "Are you on any exchanges yet?",
+      "a": "No. We have targets on our timeline to have the ASR token available on exchanges."
+    },
+    {
+      "q": "Should I invest in your token?",
+      "a": "We do not offer any investment advice. Our goal is to build the largest, globally distributed social security blockchain network and community."
+    },
+    {
+      "q": "Do you have a working version of Asure Network?",
+      "a": "Almost, we are very close to an MVP (minimum viable product) which our beta tester will be using. Out Testnet is live and can be found here. http://explorer.asure.network"
+    },
+    {
+      "q": "Are there any plans for an IEO?",
+      "a": "Yes, our crowdsale contract is designed for that and we are talking to several exchanges about the options and the right time."
+    },
+    {
+      "q":"Which wallet can be used to store ASR?",
+      "a":"ASR is an ERC20 token, meaning it can be stored in ERC20 compatible wallets such as MyEtherWallet, TrustWallet and others."
+    },
+    {
+      "q":"Where is your organisation based?",
+      "a":"Our organisation is established in Zug, Switzerland of the Swiss Crypto Valley."
+    },
+    {
+      "q":"How can I follow your updates?",
+      "a":"You can join our newsletter update list, Telegram, and via our social media. Please see website for full details."
+    }
+
+
+
+  ]
+}
