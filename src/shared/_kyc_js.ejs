@@ -1,0 +1,139 @@
+<script src='https://www.google.com/recaptcha/api.js'></script>
+<script src="<%= prefixUrl() %>js/libs/web3/web3.umd.js"></script>
+
+<script>
+    function KycManager() {
+        var self = this;
+
+        /**
+         * Checks if the given string is an address
+         *
+         * @method isAddress
+         * @param {String} address the given HEX adress
+         * @return {Boolean}
+         */
+        var isAddress = function (address) {
+            if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
+                // check if it has the basic requirements of an address
+                return false;
+            } else if (/^(0x)?[0-9a-f]{40}$/.test(address) || /^(0x)?[0-9A-F]{40}$/.test(address)) {
+                // If it's all small caps or all all caps, return true
+                return true;
+            } else {
+                if (/^(0x)?[0-9a-f]{40}$/.test(address.toLowerCase())) {
+                    // If it's all small caps or all all caps, return true
+                    return true;
+                }
+                // Otherwise check each case
+                return false; //isChecksumAddress(address);
+            }
+        };
+
+        /**
+         * Checks if the given string is a checksummed address
+         *
+         * @method isChecksumAddress
+         * @param {String} address the given HEX adress
+         * @return {Boolean}
+         */
+        var isChecksumAddress = function (address) {
+            // Check each case
+            address = address.replace('0x', '');
+            var addressHash = web3.sha3(address.toLowerCase());
+            for (var i = 0; i < 40; i++) {
+                // the nth letter should be uppercase if the nth digit of casemap is 1
+                if ((parseInt(addressHash[i], 16) > 7 && address[i].toUpperCase() !== address[i]) || (parseInt(addressHash[i], 16) <= 7 && address[i].toLowerCase() !== address[i])) {
+                    return false;
+                }
+            }
+            return true;
+        };
+
+        self.validateWallet = function () {
+            if (!isAddress(this.value)) {
+                this.setCustomValidity('"' + this.value + '" is not a valid address.');
+            } else {
+                // input is fine -- reset the error message
+                this.setCustomValidity("");
+            }
+        };
+
+        self.validate = function () {
+            if (self.form[0].checkValidity()) {
+                self.form.removeClass('was-validated');
+                return true;
+            }
+
+            self.form.addClass('was-validated');
+
+            // scroll to first invalid element
+            $('html, body').animate({
+                scrollTop: $(':invalid:not(form), .is-invalid:not(form)').first().offset().top - 80
+            }, 2000);
+
+            return false;
+        };
+
+        self.submit = function (evt) {
+            evt.preventDefault();
+
+            if (!self.validate()) {
+                return;
+            }
+
+            var formData = new FormData(this);
+
+            jQuery.support.cors = true;
+
+            $.ajax({
+                url: "https://kyc.echtnice.com",
+                type: 'POST',
+                dataType: "json",
+                contentType: false,
+                data: formData,
+                crossDomain: true,
+                success: function (data) {
+
+                    $('#address-link').attr('href', 'https://asure.network/tge-status?q=address=' + $('[name="_wallet"]').val())
+
+                    $('#card-registration').hide();
+                    $('#card-registration-successful').show();
+                },
+                error: function (error) {
+                    if (error.responseJSON) {
+                        $('#error #error-message').html(error.responseJSON.message);
+                        if (error.responseJSON.errors) {
+                            var errorList = JSON.parse(error.responseJSON.errors);
+                            $('#error #error-errors').html(errorList.map(e => e + "<br/>"));
+                        }
+                    }
+                    $('#error').show();
+                },
+                cache: false,
+                processData: false
+            });
+        }
+
+        self.init = function () {
+            self.form = $('form#form-kyc');
+            self.form.find('[name="_wallet"]').on('input', self.validateWallet);
+            self.form.submit(self.submit);
+
+
+            //Get the item from local storage.
+            //localStorage.setItem('ref', JSON.stringify(featureArray));
+            var ref = JSON.parse(localStorage.getItem('ref'));
+            if(ref) {
+                $(self.form.find('[name="_referrer"]')).val(ref);
+            }
+        }
+    }
+
+    var kycManager = new KycManager();
+    kycManager.init();
+
+
+    function recaptchaCallback() {
+        $('#fg-recaptcha').val('1');
+    }
+</script>

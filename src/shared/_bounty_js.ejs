@@ -1,0 +1,289 @@
+<script>
+    'use strict';
+
+    function camelize(str) {
+        return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+            if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+            return index === 0 ? match.toLowerCase() : match.toUpperCase();
+        });
+    }
+
+    function onlyUnique(value, index, self) {
+        return self.indexOf(value) === index;
+    }
+
+    function AsureStorage() {
+        this.STORAGE_KEY = 'ASURE-BOUNTY-STATE';
+    }
+
+    AsureStorage.prototype.load = function loadStore() {
+        var store = JSON.parse(localStorage.getItem(this.STORAGE_KEY));
+        if (!store) {
+            store = {
+                ethAddr: '',
+                toggledCampaings: {}
+            }
+        }
+        return store;
+    };
+
+    AsureStorage.prototype.save = function saveStore(store) {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(store));
+    };
+
+    AsureStorage.prototype.update = function updateStore(updater) {
+        var store = this.load();
+        updater(store);
+        this.save(store);
+    };
+
+    function BountyCard(storage) {
+        var self = this;
+
+        self.storage = storage;
+        self.bountyTasks = window.bountyTasks;
+        self.bountyReports = window.bountyReports;
+
+        self.bountyTypeIds = self.bountyTasks.map(task => task.typeId).filter(onlyUnique);
+
+        self.$formEthAddr = $('.form-bounty-eth-addr');
+        self.$ethText = self.$formEthAddr.find('a');
+        self.$ethTextView = self.$formEthAddr.find('.new-bounty-eth-addr-text-div');
+        self.$ethAddr = self.$formEthAddr.find('input');
+        self.$ethAddrView = self.$formEthAddr.find('.new-bounty-eth-addr-input-div');
+        self.$check = self.$formEthAddr.find('button');
+
+        self.$check.click(function (evt) {
+            evt.preventDefault();
+            var ethAddr = self.$ethAddr.val().toLowerCase();
+            self.storage.update(store => store.ethAddr = ethAddr);
+            self.updateBountyReport(ethAddr);
+            self.$ethTextView.show();
+            self.$ethAddrView.hide();
+        });
+        self.$ethText.click(function (evt) {
+            evt.preventDefault();
+            self.$ethTextView.hide();
+            self.$ethAddrView.show();
+        });
+
+        self.$campaignToggles = $('.form-toggle-campaigns input');
+
+        self.$campaignToggles.change(function () {
+            var typeId = $(this).val();
+            var isVisible = $(this).is(':checked');
+
+            self.storage.update(store => {
+                store.toggledCampaings[typeId] = isVisible;
+                self.toggleCampaigns(store.toggledCampaings);
+            });
+        });
+
+        self.init();
+    }
+
+    BountyCard.prototype.init = function init() {
+        var store = this.storage.load();
+
+        this.$ethAddr.val(store.ethAddr.toLowerCase());
+
+        this.toggleCampaigns(store.toggledCampaings);
+        this.updateBountyReport(store.ethAddr.toLowerCase());
+    };
+
+    BountyCard.prototype.updateBountyReport = function updateBountyReport(ethAddr) {
+        var self = this;
+        var $feedback = $('.new-bounty-eth-addr-info');
+
+        self.resetAllTaskReports();
+
+        if (ethAddr === '') {
+            $feedback.text('');
+            return;
+        }else{
+            self.$ethText.text(ethAddr);
+            self.$ethTextView.show();
+            self.$ethAddrView.hide();
+        }
+
+        ethAddr = ethAddr.toLowerCase();
+
+        var ethAddrReports = self.bountyReports.data.find(r => r.address === ethAddr);
+        if (!ethAddrReports) {
+            console.log('No bounty reports for', ethAddr);
+            $feedback.text('The provided Ethereum address has no weekly reports in the Asure Bounty Program II yet. Last Update: ' + self.bountyReports.created + '.');
+            self.updateBountyProrgam1Summary(ethAddr);
+            return;
+        }
+
+        console.log('Loading bounty reports for', ethAddr);
+        var aggregatedReports = self.bountyTasks.map(task => {
+            var weekNos = ethAddrReports.weeks
+                .filter(week => week.campaigns.hasOwnProperty(task.id) && week.campaigns[task.id].done)
+                .map(week => ({weekNo: week.weekNo, parsedWeekNo: week.parsedWeekNo}));
+
+            return {task, weekNos};
+        });
+
+        console.log('Found bounty reports', self.bountyReports.data);
+        $feedback.text('Bounty report loaded for Ethereum address ' + ethAddr + '. Last Update: ' + self.bountyReports.created + '.');
+
+        aggregatedReports.forEach(report => self.updateTaskReport(report));
+        self.updateRewardSummaries(aggregatedReports, ethAddr);
+    }
+
+    BountyCard.prototype.updateRewardSummaries = function updateRewardSummaries(reports, ethAddr) {
+        var self = this;
+        var campaignSummaries = self.calcCampaignSummaries(reports);
+        campaignSummaries.forEach(campaignSummary => {
+            var badges = [
+                campaignSummary.totalStakes > 0 ?
+                    '<span class="badge badge-secondary mr-3">My campaign stakes are ' + campaignSummary.totalStakes + '</span>' : '',
+                campaignSummary.totalTokens > 0 ?
+                    '<span class="badge badge-secondary">My campaign tokens are ' + campaignSummary.totalTokens + '</span>' : ''
+            ];
+            $('#campaign-' + campaignSummary.typeId).find('.campaign-total-rewards').append(badges.join(''));
+
+            var $toggleCampaign = $('[data-toggle-campaign=' + campaignSummary.typeId + ']');
+            $toggleCampaign.find('.campaign-stakes span').text(campaignSummary.totalStakes + ' stakes');
+            $toggleCampaign.find('.campaign-tokens span').text(campaignSummary.totalTokens + ' tokens');
+            if (campaignSummary.totalStakes === 0) {
+                $toggleCampaign.find('.campaign-stakes span').hide();
+            }
+            if (campaignSummary.totalTokens === 0) {
+                $toggleCampaign.find('.campaign-tokens span').hide();
+            }
+
+        });
+
+        var programSummary = campaignSummaries.reduce((programSummary, summary) => {
+            programSummary.totalStakes += summary.totalStakes;
+            programSummary.totalTokens += summary.totalTokens;
+
+            return programSummary;
+        }, {totalStakes: 0, totalTokens: 0});
+
+        $('.campaign-total-title').show();
+        $('.campaign-stakes-total strong').text(programSummary.totalStakes + ' stakes');
+        $('.campaign-tokens-total strong').text(programSummary.totalTokens + ' tokens');
+
+        var bounty1 = window.bountyProgram1Results[ethAddr]?window.bountyProgram1Results[ethAddr]:0;
+
+        $('.tokens-total-formula strong').text(
+            programSummary.totalStakes+ ' stakes x '+
+            self.bountyReports.summary.asrTokenPerStake.toFixed(4) + ' factor + '+
+            programSummary.totalTokens+ ' tokens + '+
+            bounty1+' tokens =');
+        var total=programSummary.totalStakes*self.bountyReports.summary.asrTokenPerStake + programSummary.totalTokens + bounty1;
+        $('.tokens-total strong').text(total.toFixed(4) + ' ASR');
+        self.updateBountyProrgam1Summary(ethAddr);
+    };
+
+    BountyCard.prototype.updateBountyProrgam1Summary = function updateBountyReport1(ethAddr) {
+        if (window.bountyProgram1Results.hasOwnProperty(ethAddr)) {
+            $('.campaign-tokens-bounty1 span').text(window.bountyProgram1Results[ethAddr]);
+            $('.campaign-tokens-bounty1').show();
+        }
+    }
+
+    BountyCard.prototype.calcCampaignSummaries = function calcCampaignSummaries(reports) {
+        var self = this;
+
+        return self.bountyTypeIds.map(typeId => {
+            return reports
+                .filter(report => report.task.typeId === typeId && report.weekNos.length > 0)
+                .reduce((summary, report) => {
+                    var task = report.task;
+                    if (task.rewardType === 'Stakes') {
+                        if (task.frequency === 'Weekly') {
+                            summary.totalStakes += Number(task.reward) * report.weekNos.length;
+                        } else {
+                            summary.totalStakes += Number(task.reward);
+                        }
+                    } else if (task.rewardType === 'Tokens') {
+                        if (task.frequency === 'Submission') {
+                            summary.totalTokens += Number(task.reward) * report.weekNos.length;
+                        }
+                    }
+
+                    return summary;
+                }, {typeId: typeId, totalStakes: 0, totalTokens: 0});
+        });
+    }
+
+    BountyCard.prototype.toggleCampaigns = function toggleCampaigns(campaigns) {
+        var self = this;
+        Object.keys(campaigns).forEach(function (typeId) {
+            var isVisible = campaigns[typeId];
+            var $toggle = self.$campaignToggles.filter('[value=' + typeId + ']');
+            var $campaign = $('[data-campaign=' + typeId + ']');
+
+            if (isVisible) {
+                $toggle.prop('checked', true);
+                $campaign.show();
+            } else {
+                $toggle.prop('checked', false);
+                $campaign.hide();
+            }
+        })
+    }
+
+    BountyCard.prototype.resetAllTaskReports = function () {
+        var self = this;
+
+        self.bountyTypeIds.forEach(typeId => {
+            $('#campaign-' + typeId).find('.campaign-total-rewards').empty();
+
+            var $toggleCampaign = $('[data-toggle-campaign=' + typeId + ']');
+            $toggleCampaign.find('.campaign-stakes span').text('');
+            $toggleCampaign.find('.campaign-tokens span').text('');
+        });
+
+        $('.campaign-total-title').hide();
+        $('.campaign-stakes-total strong').text('');
+        $('.campaign-tokens-total strong').text('');
+        $('.campaign-tokens-bounty1').hide();
+
+        self.bountyTasks.forEach(task => {
+            var $task = $('[data-taskid=' + task.id + ']');
+
+            $task.find('.card-header').removeClass('bg-success');
+            $task.find('.week-report').each(function () {
+                $(this).removeClass('week-report-completed');
+            });
+            $task.find('.task-total-rewards').empty();
+        });
+    }
+
+    BountyCard.prototype.updateTaskReport = function updateTaskReport(report) {
+        var $task = $('[data-taskid=' + report.task.id + ']');
+
+        if (report.weekNos.length > 0) {
+            $task.find('.card-header').addClass('bg-success');
+
+            var totalReward;
+            if (report.task.frequency === 'Weekly') {
+                report.weekNos.forEach(weekNo => {
+                    $task.find('.' + camelize(weekNo.parsedWeekNo)).addClass('week-report-completed');
+                });
+
+                totalReward = Number(report.task.reward) * report.weekNos.length;
+                $task.find('.task-total-rewards').append('<span class="badge badge-secondary badge-total-reward">My task ' + report.task.rewardType.toLocaleLowerCase() + ' are ' + totalReward + '</span>')
+            } else if (report.task.frequency === 'Submission' || report.task.frequency === 'Unique') {
+                totalReward = Number(report.task.reward) * report.weekNos.length;
+                $task.find('.task-total-rewards').append('<span class="badge badge-secondary badge-total-reward">My task ' + report.task.rewardType.toLocaleLowerCase() + ' are ' + totalReward + '</span>')
+            }
+        }
+    };
+
+    $(function () {
+        var storage = new AsureStorage();
+        var bountyCard = new BountyCard(storage);
+
+        $('.nav-link-goto-participate').on('click', function (e) {
+            e.preventDefault()
+
+            $('#tab-info a[href="#participate"]').tab('show');
+        })
+    });
+</script>

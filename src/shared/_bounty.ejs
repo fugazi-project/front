@@ -1,0 +1,328 @@
+<%
+camelize = function (str) {
+    return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function (match, index) {
+        if (+match === 0) return ""; // or if (/\s+/.test(match)) for white spaces
+        return index === 0 ? match.toLowerCase() : match.toUpperCase();
+    });
+}
+%>
+<% print_section = function (typeId) {
+    var weeks = public.bounty._data.index.bountyReports.weekNos;
+    var sections = public.bounty._data.index.ui.filter(data => data.typeId == typeId)
+    var name = sections[0].name;
+%>
+<div id="campaign-<%= typeId %>" class="blc-campaign blc-campaign-<%= typeId %>">
+    <div class="container">
+        <div class="row" data-campaign="<%= typeId %>">
+            <div class="col-xl-12 pb-4">
+                <div class="d-none d-md-block campaign-brand-logo campaign-brand-logo-<%= typeId %>"></div>
+
+                <div class="head m-0">
+                    <h2 class="title hr text-uppercase"><%= name %></h2>
+                    <h4 class="campaign-total-rewards"></h4>
+                </div>
+
+                <div class="card-columns <%= sections.length === 1 ? 'card-columns-1' : '' %>">
+                    <% sections.forEach(function(item){ %>
+                        <div class="card mb-2" data-taskid="<%= item.id %>">
+                            <div class="card-header">
+                                <h5><%= item.title %></h5>
+                                <h6 class="text-muted" style="font-size: 13px"><%= item.id %></h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="card-text">
+                                    <%- item.description %>
+                                    <% if (item.rules.length || item.frequency == "Weekly") { %>
+                                        <p class="text-center m-0">
+                                            <a data-toggle="collapse" href="#collapseRules<%= item.id %>" role="button"
+                                               aria-expanded="false" aria-controls="collapse">
+                                                more
+                                            </a>
+                                        </p>
+                                    <% } %>
+                                </div>
+                                <div class="collapse" id="collapseRules<%= item.id %>">
+                                    <% if (item.rules.length) { %>
+                                        <h5 class="card-title mt-2">Rules</h5>
+                                        <div class="card-text">
+                                            <ul>
+                                                <% item.rules.forEach(function(rule){ %>
+                                                    <li><%- rule %></li>
+                                                <% }); %>
+                                            </ul>
+                                        </div>
+                                    <% } %>
+                                    <% if(item.frequency == "Weekly") { %>
+                                        <h5 class="card-title mt-2">Weeks</h5>
+                                        <div class="card-text">
+                                            <% weeks.forEach(function(week){ %>
+                                                <span class="week-report <%= camelize(week) %>" data-toggle="tooltip"
+                                                      data-placement="top"
+                                                      title="<%= week %>">
+                                                    ■
+                                                </span>
+                                            <% }); %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <div>
+                                    Reward:
+                                    <span class="task-reward"><%= item.reward %></span>
+                                    <span class="task-rewardType"><%= item.rewardType %></span>
+                                    /
+                                    <span class="task-frequency"><%= item.frequency %></span>
+                                </div>
+                                <div class="task-total-rewards"></div>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+
+
+<section class="blc-bounty bg-white-blue">
+    <div class="container">
+        <div class="head m-0">
+            <h1 class="title hr">Asure Network Bounty Programm II</h1>
+        </div>
+
+        <%- partial("_bounty_info") %>
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form class="form-bounty-eth-addr">
+                            <label class="sr-only" for="new-bounty-eth-addr">ETH address</label>
+                            <div class="text-center new-bounty-eth-addr-text-div hide"><h4><a href="#"
+                                                                                              data-toggle="tooltip"
+                                                                                              data-placement="top"
+                                                                                              title="Change Ethereum address">xxx</a>
+                                </h4>
+                            </div>
+                            <div class="input-group flex-grow-1 new-bounty-eth-addr-input-div">
+                                <input type="text"
+                                       id="new-bounty-eth-addr"
+                                       class="form-control"
+                                       placeholder="ETH address"/>
+                                <div class="input-group-append">
+                                    <button type="submit" id="new-bounty-eth-addr-btn"
+                                            class="btn btn-block btn-primary text-uppercase">
+                                        Load Bounty Report
+                                    </button>
+                                </div>
+                            </div>
+                            <small class="form-text text-center text-muted new-bounty-eth-addr-info">
+                            </small>
+                        </form>
+
+                        <form class="form-toggle-campaigns mt-3 d-block d-md-flex flex-wrap justify-content-between">
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="airdrop">
+                                <div class="custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="toggle-campaign-airdrop"
+                                           value="airdrop" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-airdrop">
+                                        <a href="/bounty/#campaign-airdrop" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Airdrop campaign">
+                                            <i class="fas fa-plane"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="facebook">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-facebook"
+                                           value="facebook" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-facebook">
+                                        <a href="/bounty/#campaign-facebook" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Facebook campaign">
+                                            <i class="fab fa-facebook"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="twitter">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-twitter"
+                                           value="twitter" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-twitter">
+                                        <a href="/bounty/#campaign-twitter" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Twitter campaign">
+                                            <i class="fab fa-twitter"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="telegram">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-telegram"
+                                           value="telegram" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-telegram">
+                                        <a href="/bounty/#campaign-telegram" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Telegram campaign">
+                                            <i class="fab fa-telegram"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="linkedin">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-linkedin"
+                                           value="linkedin" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-linkedin">
+                                        <a href="/bounty/#campaign-linkedin" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto LinkedIn campaign">
+                                            <i class="fab fa-linkedin"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="reddit">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-reddit"
+                                           value="reddit" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-reddit">
+                                        <a href="/bounty/#campaign-reddit" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Reddit campaign">
+                                            <i class="fab fa-reddit"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="bitcointalk">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-bitcoin"
+                                           value="bitcointalk" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-bitcoin">
+                                        <a href="/bounty/#campaign-bitcointalk" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto BitcoinTalk campaign">
+                                            <i class="fab fa-bitcoin"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block" data-toggle-campaign="cc">
+                                <div class="custom-control custom-switch">
+                                    <input class="custom-control-input" type="checkbox" id="toggle-campaign-creative"
+                                           value="cc" checked>
+                                    <label class="custom-control-label" for="toggle-campaign-creative">
+                                        <a href="/bounty/#campaign-cc" data-toggle="tooltip"
+                                           data-placement="bottom" title="Goto Creative campaign">
+                                            <i class="fab fa-creative-commons mr-1"></i>
+                                            <i class="fab fa-youtube mr-1"></i>
+                                            <i class="fab fa-medium mr-1"></i>
+                                        </a>
+                                    </label>
+                                </div>
+                                <div class="campaign-stakes">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="campaign-tokens">
+                                    <span class="text-muted"></span>
+                                </div>
+                                <div class="tokens-total-formula">
+                                    <strong></strong>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between d-md-block">
+                                <div class="campaign-total-title hidden">
+                                    <strong>Total</strong>
+                                </div>
+                                <div class="campaign-stakes-total">
+                                    <strong></strong>
+                                </div>
+                                <div class="campaign-tokens-total">
+                                    <strong></strong>
+                                </div>
+                                <div class="tokens-total" style="font-weight: 400;">
+                                    <strong></strong>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="campaign-tokens-bounty1 text-muted text-center text-md-right mt-2 hidden">
+                            <strong>Due to your efforts during the <a href="/bountyold" target="_blank">Asure Bounty
+                                    Program I</a>, you will receive additional <span>10000</span> tokens</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%= print_section("airdrop") %>
+
+    <%= print_section("facebook") %>
+
+    <%= print_section("twitter") %>
+
+    <%= print_section("telegram") %>
+
+    <%= print_section("linkedin") %>
+
+    <%= print_section("bitcointalk") %>
+
+    <%= print_section("reddit") %>
+
+    <%= print_section("cc") %>
+
+</section>
+
+
+

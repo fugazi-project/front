@@ -1,0 +1,88 @@
+<div class="blc-footer" id="customFooter">
+    <div class="container">
+        <%- partial("_social_row") %>
+
+        <div class="row text-center">
+            <div class="col-md-3 links">
+                <p class="brand">
+                    <img src="logo/asure.black64x64.png" alt="ASURE LOGO" style="width: 64px;">
+                    <span>Asure.Network</span>
+                </p>
+                <p style="display: none">
+                    A scalable blockchain network for decentralized social security use-cases.
+                </p>
+                <ul>
+                    <li>
+                        <a href="<%= fixUrl(current.path, 'imprint/') %>">Imprint</a>
+                    </li>
+                    <li>
+                        <a href="<%= fixUrl(current.path, 'dataprivacy-policy/') %>">Data Privacy Policy</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-3 links border-left-gray">
+                <div class="title">MENU</div>
+                <ul>
+                    <% for(var i in headerLinks) {
+                        if (headerLinks[i].title == 'Contact') {
+                            continue;
+                        }
+                    %>
+                        <li>
+                            <a class="scroll-animation <%- current.path[0] == headerLinks[i].urlSegment ? 'active' : '' %>"
+                               href="<%= headerLinks[i].url %>">
+                                <%= headerLinks[i].title %>
+                            </a>
+                        </li>
+                    <% }; %>
+                </ul>
+            </div>
+            <div class="col-md-3 links border-left-gray">
+                <div class="title">DOWNLOAD</div>
+                <ul>
+                    <li>
+                        <a href="<%= fixUrl(current.path, '/asure.network.whitepaper.en.pdf') %>">Whitepaper</a>
+                    </li>
+                    <li>
+                        <a href="<%= fixUrl(current.path, '/asure.network.tge.en.pdf') %>">TGE Paper</a>
+                    </li>
+                    <li>
+                        <a href="<%= fixUrl(current.path, '/asure.network.investordeck.en.pdf') %>">Pitchdeck</a>
+                    </li>
+                    <li>
+                        <a href="<%= fixUrl(current.path, '/asure.depot.en.pdf') %>">Decentralized Pension</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-3 border-left-gray" id="contacts">
+                <p class="brand text-center">
+                    <img src="logo/asure.black64x64.png" alt="ASURE LOGO" style="width: 64px;">
+                    <span>Asure Foundation</span>
+                </p>
+
+                <ul>
+                    <li>
+                        <a href="mailto:info@asure.io">info@asure.io</a>
+                    </li>
+                    <li>
+                        <a href="https://www.asure.io" target="_blank"
+                           rel="noreferrer noopener">https://www.asure.io
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer id="footer">
+    <div class="copyright">
+        &copy; 2017-2019 Asure Foundation — Made with
+        <i class="fa fa-heart fa-beat red"></i> and incorporated in Zug, Switzerland
+    </div>
+</footer>
+
+<nav class="navbar-footer fixed-bottom">
+    <%- partial("_cookies") %>
+    <% /* partial("_social-navbar") */ %>
+</nav>

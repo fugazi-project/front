@@ -1,0 +1,158 @@
+<section class="blc-news blc-staking-calculator bg-gradient-blue" id="staking-calculator">
+    <div class="head" style="margin-bottom: 0px;">
+        <h1 class="title hr black">Staking Rewards Calculator</h1>
+    </div>
+
+    <div class="container staking-calculator">
+        <div class="row padding-bottom-20">
+            <div class="offset-md-2 col-md-8 justify">
+                The token will be used for On-Chain
+                <span data-toggle="popover"
+                      title="Governance"
+                      data-placement="bottom"
+                      data-trigger="hover"
+                      data-content="On-Chain governance is crucial. ASR token holders will be able to govern the Asure blockchain,
+                network, and vote over future improvements."
+                ><strong>Governance</strong></span>
+                and by
+                <span data-toggle="popover"
+                      title="Network Validators"
+                      data-placement="bottom"
+                      data-trigger="hover"
+                      data-content="Validators need to stake ASR tokens to validate transactions
+                within the Asure network. In return, the network validators receive the networks transaction fees in
+                the form of ASR as an incentive for validating correct blocks."
+                ><strong>Network Validators</strong></span> as well as
+                <span data-toggle="popover"
+                      title="Service Providers"
+                      data-placement="bottom"
+                      data-trigger="hover"
+                      data-content="The ASR token serves as an incentive for service providers within the Asure platform to work
+                correctly and as advertised within their SLA’s."
+                ><strong>Service Providers</strong></span> to
+                participate as stakers in the proof-of-stake consensus mechanisms of the Asure network.
+            </div>
+
+        </div>
+
+        <div class="row shadow">
+            <div class="col-md-12">
+
+                <form id="form" class="form-stacking-calc" novalidate>
+                    <div class="row bg-green">
+                        <div class="col-md-12 py-4 content-block text-center">
+                            <h1 class="title hr">Expected rewards</h1>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3>Daily</h3>
+                            <h3 id="perDay"></h3>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3>Monthly</h3>
+                            <h3 id="perMonth"></h3>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <h3>Yearly</h3>
+                            <h3 id="perYear"></h3>
+                        </div>
+                    </div>
+
+                    <div class="row pt-4 bg-light-green">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="ownTokensStaking">Tokens you're staking</label>
+                                <input type="number" value="0" id="ownTokensStaking" class="form-control" required
+                                       min="1" max="100000000">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="totalTokensStaked">Tokens staked</label>
+                                <input type="number" value="0" id="totalTokensStaked" class="form-control" required
+                                       min="1" max="100000000">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group disabled">
+                                <label for="percentageTokensStaked">Percentage Token staked</label>
+                                <input type="text" value="0" id="percentageTokensStaked"
+                                       readonly tabindex="-1" class="form-control-plaintext" max="100">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row bg-light-green">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="dalilyTransactionVolume">Daily transaction volume</label>
+                                <input type="number" value="0" id="dalilyTransactionVolume" class="form-control"
+                                       required min="1" max="10000000000">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="avgTransactionSize">Average transaction size</label>
+                                <input type="number" value="0" id="avgTransactionSize" class="form-control" required min="1" max="10000000000">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group disabled">
+                                <label for="avgTransactionDay">Average transactions per day</label>
+                                <input type="text" value="1" id="avgTransactionDay"
+                                       readonly tabindex="-1" class="form-control-plaintext" min="1">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row bg-light-green">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="baseFlatFee">Base flat fee</label>
+                                <input type="number" value="1" id="baseFlatFee" class="form-control" step="any" required min="0" max="100">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="percentageFee">Percentage fee</label>
+                                <input type="number" value="0" id="percentageFee" class="form-control" step="any" required min="0" max="100">
+                                <div class="invalid-feedback">
+                                    Please provide a valid amount.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group disabled">
+                                <label for="avgFeesPaidDay">Average fees paid per day</label>
+                                <input type="text" value="0" id="avgFeesPaidDay" placeholder="Average fees paid per day"
+                                       readonly tabindex="-1" class="form-control-plaintext">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pb-4 bg-light-green">
+                        <div class="offset-md-8 col-md-4 content-block text-center">
+                            <input type="button" value="RESET VALUES" name="subscribe"
+                                   class="btn btn-primary mb-2 form-control"
+                                   onclick="resetValues()">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

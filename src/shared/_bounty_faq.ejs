@@ -1,0 +1,84 @@
+<div class="blc-faq bg-white-green" id="faq">
+    <div class="container">
+        <div class="head">
+            <h1 class="title hr">FREQUENTLY ASKED QUESTIONS</h1>
+        </div>
+        <%= //JSON.stringify(public) %>
+        <div class="row">
+            <div class="col-md-6">
+
+                <div id="accordion1" role="tablist">
+                    <%
+                    var faqs = public.bounty._data.index.faq;
+                    var index = 0;
+
+                    faqs.forEach(function(faq){ index++;
+                        if(index%2 !== 0)
+                        {
+                    %>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="heading1<%= index %>">
+                            <h5 class="mb-0">
+                                <a data-toggle="collapse" href="#collapse1<%= index %>" aria-expanded="false"
+                                   aria-controls="collapse1<%= index %>">
+                                    <%= faq.q %>
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="collapse1<%= index %>" class="collapse" role="tabpanel"
+                             aria-labelledby="heading1<%= index %>" data-parent="#accordion1">
+                            <div class="card-body">
+                                <%- faq.a %>
+                            </div>
+                        </div>
+                    </div>
+                    <% }}) %>
+                </div>
+
+            </div>
+            <div class="col-md-6">
+                <!--
+                When will the pre-sale and token sale happen?
+                We’re working with security auditors to finalise the contract. When they have
+                completed their analysis we will announce the confirmed dates of both the
+                pre-sale and token sale. Note that the ASR pre-sale and token sale parameters
+                will be tied to the block number, so times will depend on Ethereum mining
+                rates. The contract will be pushed to github and Ethereum mainnet at least 3
+                days before the presale starts. We’ll also give people a week to interact with the
+                contract on Ropsen / testnet.
+
+
+
+                -->
+
+
+                <div id="accordion2" role="tablist">
+                    <%
+                    var index=0;
+                    faqs.forEach(function(faq){ index++;
+                        if( index%2 ===0)
+                        {
+                    %>
+                    <div class="card">
+                        <div class="card-header" role="tab" id="heading2<%= index %>">
+                            <h5 class="mb-0">
+                                <a data-toggle="collapse" href="#collapse2<%= index %>" aria-expanded="false"
+                                   aria-controls="collapse2<%= index %>">
+                                    <%= faq.q %>
+                                </a>
+                            </h5>
+                        </div>
+                        <div id="collapse2<%= index %>" class="collapse" role="tabpanel"
+                             aria-labelledby="heading2<%= index %>" data-parent="#accordion2">
+                            <div class="card-body">
+                                <%- faq.a %>
+                            </div>
+                        </div>
+                    </div>
+                    <% }}) %>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

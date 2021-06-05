@@ -1,0 +1,88 @@
+<script src="http://afarkas.github.io/webshim/js-webshim/minified/polyfiller.js"></script>
+<script>
+
+    $("input").keyup(rewards).change(rewards);
+
+    init();
+
+    function init() {
+        $("#ownTokensStaking").val(1);
+        $("#totalTokensStaked").val(50000000);
+        $("#dalilyTransactionVolume").val(100000000);
+        $("#avgTransactionSize").val(40);
+
+        $("#baseFlatFee").val(0.05);
+        $("#percentageFee").val(0.25);
+
+        $("#percentageTokensStaked").val(0);
+        $("#avgTransactionDay").val(0);
+        $("#avgFeesPaidDay").val(0);
+
+        rewards();
+    }
+
+    function strToNumber(e) {
+        return e ? Number(e.replace(/[^0-9\.\-]/g, "")) : 0
+    }
+
+    function validate() {
+        var form = $('.form-stacking-calc');
+        if (form[0].checkValidity()) {
+            form.removeClass('was-validated');
+            return true;
+        } else {
+            form.addClass('was-validated');
+            return false;
+        }
+    }
+
+    function rewards() {
+        if (!validate()) {
+            return;
+        }
+
+        var ownTokensStaking = strToNumber($("#ownTokensStaking").val());
+        var totalTokensStaked = strToNumber($("#totalTokensStaked").val());
+        if(totalTokensStaked === 0 || ownTokensStaking === 0) return resetRewards();
+        if(ownTokensStaking > totalTokensStaked){
+            totalTokensStaked = ownTokensStaking;
+            $("#totalTokensStaked").val(ownTokensStaking); return
+        }
+        var percentageTokensStaked = ownTokensStaking / totalTokensStaked;
+
+        var baseFlatFee = strToNumber($("#baseFlatFee").val());
+        var percentageFee = strToNumber($("#percentageFee").val());
+        var dalilyTransactionVolume = strToNumber($("#dalilyTransactionVolume").val());
+        var avgTransactionSize = strToNumber($("#avgTransactionSize").val());
+        if(avgTransactionSize === 0) return resetRewards();
+        var dailyTx = dalilyTransactionVolume / avgTransactionSize;
+        var flatFee = dailyTx * baseFlatFee;
+        var percentageFeeCalc = dalilyTransactionVolume * percentageFee / 100;
+
+        var result = (flatFee + percentageFeeCalc) / totalTokensStaked * ownTokensStaking;
+        var daily = result;
+        var monthly = 30 * result;
+        var yearly = 365 * result;
+
+        $("#percentageTokensStaked").val((Math.round(percentageTokensStaked * 100 * 1000000) / 1000000) + " %");
+        $("#avgTransactionDay").val(dailyTx.toLocaleString("en-US"));
+        $("#avgFeesPaidDay").val("$ " + (flatFee + percentageFeeCalc).toLocaleString("en-US"));
+
+
+        $("#perDay").text("$ " + (Math.round(daily * 10000) / 10000) + "");
+        $("#perMonth").text("$ " + (Math.round(monthly * 10000) / 10000) + "");
+        $("#perYear").text("$ " + (Math.round(yearly * 100) / 100) + "");
+    }
+
+    function resetValues() {
+        this.init();
+    }
+
+    function resetRewards(){
+        $("#perDay").text("$ 0");
+        $("#perMonth").text("$ 0");
+        $("#perYear").text("$ 0");
+    }
+</script>
+
+

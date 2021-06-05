@@ -1,0 +1,843 @@
+<%
+hasCampaign = function (bounty, weekNo, campaignName) {
+let result = false;
+
+const week = bounty.weeks.find(week => week.parsedWeekNo == weekNo);
+if (week) {
+const campaign = week.campaigns[campaignName];
+if (campaign) {
+result = campaign.done;
+}
+}
+
+let output = '';
+if (result) {
+output = 'bounty-done';
+}
+
+return output;
+}
+%>
+
+
+<section class="blc-tge bg-white-blue" id="tge">
+    <div class="container">
+        <div class="head">
+            <h1 class="title hr">Asure Network Bounty Campaign I</h1>
+            <div class="row">
+                <div class="offset-md-2 col-md-8 justify">
+                    <a href="https://bitcointalk.org/index.php?topic=5150750.msg51349151" target="_blank"
+                       class="btn btn-success form-control">BITCOINTALK</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="margin-bottom: 20px; margin-top: 20px;">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Check your activities</h5>
+                        <p class="card-text"></p>
+                        <form>
+                            <div class="form-group">
+                                <label class="hidden" for="bounty-eth-addr">ETH address</label>
+                                <input type="text"
+                                       id="bounty-eth-addr"
+                                       class="form-control"
+                                       placeholder="ETH address"/>
+                            </div>
+                            <button type="submit" id="bounty-eth-addr-btn" class="btn btn-block btn-primary">CHECK
+                            </button>
+                        </form>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bounties">
+            <% for (const bounty of bounties.data) { %>
+            <div class="row bounty hidden" style="margin-bottom: 20px; margin-top: 20px;"
+                 id="<%= 'bounty-' + bounty.address %>">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Bounty activities</h5>
+                            <h6 class="card-subtitle mb-2 text-muted text-center">Last
+                                Update: <%= bounties.created %></h6>
+                            <h6 class="card-subtitle mb-2 text-muted text-center">ETH
+                                Address: <%= bounty.address %></h6>
+                            <table class="table table-sm table-bordered table-responsive-md table-fixed">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Week</th>
+                                    <th class="text-center">Creative Contest</th>
+                                    <th class="text-center"><i class="fab fa-linkedin-in"></i></th>
+                                    <th class="text-center"><i class="fab fa-twitter"></i></th>
+                                    <th class="text-center"><i class="fab fa-telegram-plane"></i></th>
+                                    <th class="text-center"><i class="fab fa-facebook-square"></i></th>
+                                    <th class="text-center"><i class="fab fa-youtube"></i></th>
+                                    <th class="text-center">Translation</th>
+                                    <th class="text-center"><img
+                                            src='data:image/png;base64,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'
+                                            width="18px" height="18px"/></th>
+                                    <th class="text-center"><i class="fab fa-reddit-alien"></i></th>
+                                    <th class="text-center"><i class="far fa-address-card"></i></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% for (const weekNo of bounties.weekNos) { %>
+                                <tr>
+                                    <td class="text-center"><strong><%= weekNo.substring(4, 7) %></strong></td>
+                                    <% for (const campaign of bounties.campaigns) { %>
+                                    <td class="<%= hasCampaign(bounty, weekNo, campaign) %>"></td>
+                                    <% } %>
+                                </tr>
+                                <% } %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+        </div>
+
+
+
+        <div class="ico">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="item">
+                        <div>
+                            <h2 class="d-block d-lg-none">Details</h2>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link active" href="#tab-info" aria-controls="messages"
+                                               role="tab"
+                                               data-toggle="tab">
+                                                <i class="fa fa-info"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-stats" aria-controls="messages" role="tab"
+                                               data-toggle="tab">
+                                                <i class="far fa-chart-bar"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-airdrop" aria-controls="home" role="tab"
+                                               data-toggle="tab">
+                                                Airdrop
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-creative" aria-controls="home" role="tab"
+                                               data-toggle="tab">
+                                                Creative
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-twitter" aria-controls="home" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-twitter"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-peepeth" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                <img src='data:image/png;base64,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'
+                                                     width="18px" height="18px"/>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-linkedin" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-linkedin-in"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-telegram" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-telegram-plane"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-reddit" aria-controls="messages" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-reddit-alien"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-youtube" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-youtube"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-facebook" aria-controls="messages" role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-facebook-square"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-bitcointalk" aria-controls="bitcointalk"
+                                               role="tab"
+                                               data-toggle="tab">
+                                                <i class="fab fa-btc"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-signature" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                <i class="far fa-address-card"></i>
+                                            </a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="nav-link" href="#tab-faq" aria-controls="profile" role="tab"
+                                               data-toggle="tab">
+                                                FAQ
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="tab-info">
+
+                                        <p>
+                                            Please submit your work report via weekly report Form as well as on the
+                                            Bounty
+                                            thread till the end of every week.
+                                            <br/><br/>
+                                            How to Apply<br/>
+                                            1. Fill out the registration application form:<br/>
+                                            <a href="https://forms.gle/kLfbUSbyfjRSZEkU7" target="_blank"
+                                               class="btn btn-primary col-2">
+                                                Registration
+                                            </a>
+                                            <br/>
+                                            2. Fill in your activities in the form here: <br/>
+                                            <a href="https://forms.gle/uzwm5xwyvsnoJ2aY9" target="_blank"
+                                               class="btn btn-primary col-2">
+                                                Report
+                                            </a>
+                                            <br/>
+                                            3. Kindly fill up the forms in Bitcointalk below:<br/>
+                                            <a href="https://bitcointalk.org/index.php?topic=5150750.msg51349151"
+                                               target="_blank" class="btn btn-primary col-2">
+                                                bitcointalk.org
+                                            </a>
+
+                                        </p>
+                                        <pre>Report Example:
+ Your Name: ________
+ ERC-20 Wallet Address : ________
+ Campaign Name: ________
+ Week Number: __________
+ Work URLs: _________
+ Description: _________
+                                    </pre>
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                How many repost and share/week for FB/LinkedIn/social campaign?
+                                            </strong><br/>
+                                            per week and campaign: up to 5 activities results in 5 shares per
+                                            campaign<br/>
+                                            - comment - make one meaningful comment 70 character length (don't mention
+                                            about
+                                            Bounty)<br/>
+                                            - repost - repost one of our last posts with meaningful text and
+                                            hashtags<br/>
+                                            - like - like one of our last posts
+                                        </p>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-stats">
+                                        We want to distribute 5% of all the Asure tokens through the Bounty Program for
+                                        two
+                                        important reasons to raise awareness about the project as well as tokens for
+                                        more
+                                        community decentralization. That’s why we also use Airdrops, Compagnes, Angels
+                                        and
+                                        much more to achieve these goals.
+                                        <br/><br/>
+                                        <strong>Total Bounty Pool will be divided as follows:</strong><br/>
+                                        <br/>
+                                        10 % = $ 500.000 ASR Tokens: <a href="https:/asure.network/angels"
+                                                                        target="_blank">Asure Angels</a><br/>
+                                        10 % = $ 500.000 ASR Tokens: Agencies and Partnership<br/>
+                                        5 % = $ 250.000 ASR Tokens: Bug-Bounty Programm<br/>
+                                        5 % = $ 250.000 ASR Tokens: Reserve for unexpected purposes<br/>
+                                        20 % = $ 1.000.000 ASR Tokens: Airdrop<br/>
+                                        <br/>
+                                        <strong>Phase 1: Today-15th Aug. 2019 (BOUNTY DISTRIBUTION)</strong><br/>
+                                        <br/>
+                                        10 % = $ 500.000 ASR Tokens: Shares for Campaigns— Phase 1<br/>
+                                        <br/>
+                                        <strong>Phase 2: 15th Aug.-31th Dec. 2019 (BOUNTY DISTRIBUTION)</strong><br/>
+                                        <br/>
+                                        40 % = $ 2.000.000 ASR Tokens: Shares for Campaigns — Phase 2<br/>
+                                        <br/>
+                                        <strong>Shared Campaigns</strong><br/>
+                                        <br/>
+                                        20% Creative Campaign — (Articles, News, Blog posts, etc.)<br/>
+                                        10% Twitter Campaign — (Follow, share, comments)<br/>
+                                        5% Peepeth Campaign — (Follow, like, share)<br/>
+                                        10% LinkedIn Campaign — (Content, like, share, comment)<br/>
+                                        10% Telegram Campaign — (Follow, share, comments)<br/>
+                                        10% Youtube Campaign — (Follow, share, comments)<br/>
+                                        5% Translation Campaign — (Translate: Papers, Websites, etc.)<br/>
+                                        10% Reddit Campaign — (Follow, share, comments)<br/>
+                                        10% Facebook Campaign — (Follow, like, share, comments)<br/>
+                                        5% Bitcointalk Campaign — (Comment, post, discuss, moderate)<br/>
+                                        5% Signature Campaign — (Bitcointalk, Twitter, Facebook)<br/>
+                                        <br/>
+                                        <img src="https://miro.medium.com/max/1200/1*rrIkhIH8_MZZ_KN_y8nIxA.png"
+                                             class="img-fluid"/>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-airdrop">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*IfHlL1754UANutU0MKCIbA.png"
+                                             class="img-fluid"/>
+                                        Just follow the easy steps and click the links below: <br/>
+                                        <a href="https://forms.gle/kLfbUSbyfjRSZEkU7" target="_blank">https://forms.gle/kLfbUSbyfjRSZEkU7</a>
+
+                                        <br/><br/>
+                                        1) Follow Asure Official Twitter:<br/>
+                                        <a href="https://twitter.com/AsureNetwork" target="_blank">https://twitter.com/AsureNetwork</a>
+                                        <br/><br/>
+                                        2) Retweet the pinned post and put hashtags:<br/>
+                                        #asure #asuretoken $ASR #tge #ico #ieo #crypto #defi #socialsecurity
+                                        @asurenetwork
+                                        <br/><br/>
+                                        3) Follow Asure main Telegram:<br/>
+                                        <a href="https://t.me/AsureNetwork"
+                                           target="_blank">https://t.me/AsureNetwork</a>
+                                        <br/><br/>
+                                        4) Follow Asure Bounty Telegram:<br/>
+                                        <a href="https://t.me/AsureBounty" target="_blank">https://t.me/AsureBounty</a>
+
+                                        <br/><br/>
+                                        5) Feel free to follow us other social media channels<br/>
+                                        <a href="https://medium.com/AsureNetwork" target="_blank">https://medium.com/AsureNetwork</a><br/>
+                                        <a href="https://www.linkedin.com/company/asure" target="_blank">https://www.linkedin.com/company/asure</a><br/>
+                                        <a href="https://fb.me/AsureNetwork"
+                                           target="_blank">https://fb.me/AsureNetwork</a><br/>
+                                        <a href="https://www.reddit.com/r/asure" target="_blank">https://www.reddit.com/r/asure</a><br/>
+                                        <a href="https://peepeth.com/AsureNetwork" target="_blank">https://peepeth.com/AsureNetwork</a><br/>
+                                        <a href="https://www.youtube.com/channel/UCa3AMvXEwfOkgjih2ESuhSQ"
+                                           target="_blank">https://www.youtube.com/channel/UCa3AMvXEwfOkgjih2ESuhSQ</a><br/>
+                                        <br/><br/>
+                                        Change in wallet addresses is not permitted, so make sure that you provide the
+                                        correct details the first time itself.
+                                        <br/><br/>
+                                        To complete your registration to Asure bounty program Kindly fill up the forms
+                                        below:<br/>
+                                        <a href="https://forms.gle/kLfbUSbyfjRSZEkU7" target="_blank">https://forms.gle/kLfbUSbyfjRSZEkU7</a>
+
+                                    </div>
+
+                                    <div role="tabpanel" class="tab-pane" id="tab-creative">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*5AaP1bbjNPzqJaTo7AK7IA.png"
+                                             class="img-fluid"/>
+
+                                        Earn Tokens as a reward for any way you can promote Asure Network online.
+                                        Examples
+                                        of such work along with the rules will be given below. Basically, it can be one
+                                        of
+                                        the following, but not limited to article/video/post and so on. If you have a
+                                        great
+                                        idea and would like to know if it will be accepted, simply ask us.
+                                        <br/><br/>
+                                        <strong>Payment:</strong><br/>
+                                        <br/>
+                                        20% of the Total Bounty will be allocated to the Creative Contest.
+
+                                        <br/><br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        <ul>
+                                            <li>Write a public post or an article about Asure Network in any language,
+                                                with at least
+                                                300 words and containing 2 links to https://www.asure.network/.
+                                            </li>
+                                            <li>The website/blog where you post the content has to be relevant and
+                                                connected to
+                                                the crypto/financial world.
+                                            </li>
+                                            <li>Your article/blog post has to have good writing quality.</li>
+                                            <li>You can post it in your blog, in Medium, LinkedIn, Facebook or in a
+                                                forum where
+                                                you are active. The article must be online at least until the end of our
+                                                TGE.<br/>
+                                                The popularity of the media where the post/article will be published as
+                                                well as the
+                                                quality of the content will be taken into consideration when we
+                                                categorize works.
+                                            </li>
+                                            <li>Only original work is accepted, using the work of someone else or
+                                                copy/pasting
+                                                parts of the ann thread/website/whitepaper will disqualify your work(s).
+                                            </li>
+                                            <li>You can’t post the same article twice.</li>
+                                            <li>Unaccepted works must be removed from the Internet as soon as possible,
+                                                but not
+                                                later than after 2 days after the work was marked as unaccepted,
+                                                otherwise, the
+                                                user will be completely banned from all our Bounty programs (current
+                                                ones and
+                                                the future ones).
+                                            </li>
+                                            <li>You accept, that we can repost your post in our publications.</li>
+                                        </ul>
+                                        <br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        We will categorize each article as extraordinary (100 shares), medium 5 shares,
+                                        low (unaccepted). Extraordinary articles are articles published on press
+                                        websites such as Forbes, TechCrunch, BitcoinMagazine, etc.
+                                        <br/><br/>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-twitter">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*6s9vTNyOA9MKBOPguHoZSg.png"
+                                             class="img-fluid"/>
+                                        Earn Tokens as a reward for retweets and likes of the official announcements
+                                        twits
+                                        of the Asure Network account.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/><br/>
+                                        10% of Shares Bounty will be allocated to Twitter Campaign<br/>
+                                        <br/>
+                                        <strong>Rules & Requirements</strong><br/><br/>
+                                        <ul>
+                                            <li>Follow us here: <a href="https://twitter.com/AsureNetwork"
+                                                                   target="_blank">https://twitter.com/AsureNetwork</a>
+                                            </li>
+                                            <li>The Twitter audit must be equal to or greater than 85% (use
+                                                https://www.twitteraudit.com/).
+                                            </li>
+                                            <li>Must make at least 5 activities about Asure Network per week.</li>
+                                            <li>Retweet all of Asure Network's official announcements</li>
+                                            <li>Comments should have a minimum of 50 characters and constructive.</li>
+                                            <li>Breaking Any of the Campaign rules can result in being rejected.</li>
+                                            <li>You must have a minimum of 300 followers and a minimum of 50 twits.</li>
+                                            <li>Twitter account must be legitimate with no less than 90% Twitter Audit.
+                                                No fake,
+                                                inactive or a bot account allowed.
+                                            </li>
+                                            <li>You must be an active and regular Twitter user & must retweet and like
+                                                @AsureNetwork official tweets and updates.
+                                            </li>
+                                            <li>Include in all posts @AsureNetwork, posts without a tag will not be
+                                                counted.
+                                            </li>
+                                            <li>Account must be open as a Public Profile and all Posts shared need to be
+                                                public
+                                                as well.
+                                            </li>
+                                            <li>Make RETWEETS with the hashtags:
+                                                #asure #asuretoken #tge #ico #crypto #defi
+                                            </li>
+                                            <li>Multiple accounts are not allowed. Those found using such multi accounts
+                                                will be
+                                                disqualified and blacklisted from all future campaigns
+                                            </li>
+                                            <li>Be create and create own Posts</li>
+                                        </ul>
+
+                                        <br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 5 tasks in any combination (post,
+                                        retweet, like, comment).
+                                        <br/>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-peepeth">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*ZRD4kEGLzAS2oPh92vBt3g.png"
+                                             class="img-fluid"/>
+                                        Earn Tokens as a Reward for reposting Asure Network announcements on Peepeth.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        5% of Shares Bounty will be allocated to Peepeth Campaign<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        Follow official Asure Network Peepeth page:
+                                        https://peepeth.com/AsureNetwork<br/>
+                                        Share at least 5 Asure Network posts in Peepeth<br/>
+                                        Be create and create own Posts<br/><br/>
+
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 5 tasks in any combination (post,
+                                        retweet, like, comment).
+                                        <br/>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-linkedin">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*1srg1A3pnD30Dj_Z72fXJQ.png"
+                                             class="img-fluid"/>
+
+                                        Earn Tokens as a Reward for liking, commenting and sharing Asure Network
+                                        official
+                                        posts.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        10% of Shares Bounty will be allocated to LinkedIn Campaign<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        Follow the official Asure LinkedIn account:
+                                        https://www.linkedin.com/company/asure/<br/>
+                                        Like all our posts in LinkedIn.<br/>
+                                        Share at least 5 of our posts on LinkedIn in your profile.<br/>
+                                        Leave meaningful and constructive comments in English under our posts.<br/>
+                                        Share at least one of our newest LinkedIn posts per week.<br/>
+
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 5 tasks in any combination (post,
+                                        like, comment).
+                                        <br/>
+                                    </div>
+
+                                    <div role="tabpanel" class="tab-pane" id="tab-telegram">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*YeKOdGVVDTriECQVkGn7WQ.png"
+                                             class="img-fluid"/>
+
+                                        Earn Tokens as a reward for joining Asure Network Telegram group and changing
+                                        your
+                                        account description/avatar in order to increase Asure awareness in Telegram
+                                        (Signature Campaign).
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        10% of Shares Bounty will be allocated to Telegram Campaign<br/>
+                                        <br/>
+                                        In order to receive updates and ask any bounty specific questions, join our
+                                        Bounty
+                                        Telegram Group https://t.me/AsureNetwork<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        Join our Official Telegram Group https://t.me/AsureNetwork (
+                                        You Must Stay in the group until Bounty is over ). <br/>
+                                        Add Text "Asure.Network TGE" to your telegram username.<br/>
+                                        Add our Avatar to your Telegram profile picture.<br/>
+                                        You can invite 1 friend per week. <br/>
+                                        Breaking Any of the Telegram Campaign rules can result in being rejected.<br/>
+                                        <br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 5 tasks in any combination (post,
+                                        comment, invite).
+                                        <br/>
+
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-reddit">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*2oDl6lM5hDYiEfRVeGovLA.png"
+                                             class="img-fluid"/>
+
+                                        Earn tokens as a reward for following Asure account in Reddit and for sharing
+                                        Asure
+                                        posts in other crypto related community subreddits
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        10% of Shares Bounty will be allocated to Reddit Campaign
+                                        <br/><br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        Subscribe to the Asure subreddit: <a href="https://www.reddit.com/r/Asure"
+                                                                             target="_blank">https://www.reddit.com/r/Asure</a><br/>
+                                        <br/>
+                                        Like all official posts: <a
+                                            href="https://www.reddit.com/user/AsureFoundation/posts/"
+                                            target="_blank">https://www.reddit.com/user/AsureFoundation/posts/</a>
+                                        <br/>
+                                        Share at least 5 Asure Network posts in other crypto related community
+                                        subreddits
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-youtube">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*pznwoKy3V_3ont0EUxp7pQ.png"
+                                             class="img-fluid"/>
+
+                                        Earn Tokens as a Reward for liking and subscribing to Asure Network Youtube
+                                        channel.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        10% of Shares Bounty will be allocated to Youtube Campaign<br/>
+                                        <br/>
+                                        High Quality: (500 ASR) ($500)<br/>
+                                        Medium Quality: (300 ASR) ($300)<br/>
+                                        Low Quality: (200 ASR) ($200)<br/>
+                                        <br/>
+                                        <strong>Rules & Requirements</strong><br/>
+                                        <br/>
+                                        <ul>
+                                            <li>Subscribe to the official Asure Network Youtube channel:
+                                                https://www.youtube.com/c/AsureNetwork
+                                            </li>
+                                            <li>Watch and like Asure Network videos.</li>
+                                            <li>We would accept any positive video about Asure Network, not only about
+                                                the
+                                                TGE but about the idea itself, use cases, benefits, TGE, etc.
+                                            </li>
+                                            <li>Upload them on YouTube and/or Facebook (any video platform)</li>
+                                            <li>Must have at least 300+ subscribers</li>
+                                            <li>Duration should not be less than 2 minutes of actual content</li>
+                                            <li>Tokens will be allotted on the basis of the quality and audience of the
+                                                video. The amount of stakes assigned is non-negotiable.
+                                            </li>
+                                            <li>Plagiarism or use of other’s material will be considered as an invalid
+                                                submission
+                                            </li>
+                                            <li>Each submission has to have a clear identification or link to
+                                                bitcointalk account in the description.
+                                            </li>
+                                            <li>Maximum of 5 submissions per user</li>
+                                        </ul>
+                                        <br/><br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        Max +5 Shares per week, you need to perform 5 tasks in any combination (comment,
+                                        likes).
+                                        <br/>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-facebook">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*zk6VW0ufoA6x6HGMri9bYg.png"
+                                             class="img-fluid"/>
+                                        <br/>
+                                        Earn Tokens as a Reward for getting people to like Asure Network Facebook Page
+                                        and
+                                        sharing Asure Network official announcements.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        10% of Shares Bounty will be allocated to Facebook Campaign<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        <ul>
+                                            <li>Like official Asure Network Facebook page: <a
+                                                    href="https://www.facebook.com/AsureNetwork" target="_blank">https://www.facebook.com/AsureNetwork</a>
+                                            </li>
+                                            <li>Like Asure posts and/or share them on your Facebook page</li>
+                                        </ul>
+                                        <br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 5 tasks in any combination (post,
+                                        repost, comment, likes).
+                                        <br/>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-bitcointalk">
+                                        <img src="https://miro.medium.com/max/1200/1*uMcHe5ICxvBZIumZUM97yA.png"
+                                             class="img-fluid"/>
+                                        <br/>
+                                        Earn Tokens as a Reward for getting people to talk about Asure
+                                        and sharing Asure Network vision and mission.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        5% of Shares Bounty will be allocated to Bitcointalk Campaign<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        <ul>
+                                            <li>Comment to Official annoncement post <a
+                                                    href="https://bitcointalk.org/index.php?topic=5144579.0"
+                                                    target="_blank">https://bitcointalk.org/index.php?topic=5144579.0</a>.
+                                            </li>
+                                            <li>Make one meaningful comment 70 character length (don't mention about
+                                                Bounty).
+                                            </li>
+                                            <li>(Optional) You can start a new discussion with a new positiv
+                                                Post/Question about Asure Network.
+                                            </li>
+                                        </ul>
+                                        <br/>
+                                        <strong>Shares</strong><br/><br/>
+                                        Max 5 Shares per week, you need to perform 1 tasks in any combination
+                                        (post, comment, moderate, discuss).
+                                        <br/>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="tab-signature">
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*scHIXnUvxZCiot99RaqHUw.png"
+                                             class="img-fluid"/>
+                                        Earn Tokens as a Reward for uploading Asure Network signature in
+                                        Bitcointalk, Twitter, Telegram, Facebook and etc.<br/><br/>
+                                        We don't provide any BB code or Text be just creative, link to the website is
+                                        important.
+                                        <br/><br/>
+                                        <strong>Payment</strong><br/>
+                                        <br/>
+                                        5% of Shares Bounty will be allocated to Signature Campaign<br/>
+                                        <br/>
+                                        <strong>Rules</strong><br/>
+                                        <br/>
+                                        Simply upload/update the signature about Asure Network.<br/>
+                                        Logos are published to the Asure Network Dropbox:
+                                        <a href="https://www.dropbox.com/sh/46std9u0knlq2cz/AAAR3N1LiMs0vG0ZqWf7RSj9a?dl=0"
+                                           target="_blank">
+                                            https://www.dropbox.com/sh/46std9u0knlq2cz/AAAR3N1LiMs0vG0ZqWf7RSj9a?dl=0
+                                        </a>
+                                    </div>
+
+                                    <div role="tabpanel" class="tab-pane" id="tab-faq">
+
+                                        <img src="https://cdn-images-1.medium.com/max/1200/1*AnFzFKlDBaWuhrPknroqwA.png"
+                                             class="img-fluid"/>
+
+                                        <ul>
+                                            <li>We reserve the right to limit the number of participants in the
+                                                campaigns at
+                                                any
+                                                time.
+                                            </li>
+                                            <li>We reserve the right to change the conditions of our bounty campaign at
+                                                any
+                                                time.
+                                            </li>
+                                            <li>We reserve the right to disqualify any user at any time.</li>
+                                            <li>Only one account per person. Using multi-accounts, cheating and spamming
+                                                are
+                                                strictly forbidden. The ones breaking the rule will be disqualified from
+                                                the
+                                                Bounty
+                                                program without getting any tokens.
+                                            </li>
+                                            <li>The distribution of the tokens to bounty participants will occur after
+                                                the
+                                                end of
+                                                TGE.
+                                            </li>
+                                            <li>Your payment address cannot be changed. Once you apply, your address
+                                                will be
+                                                locked.
+                                                (Every participant is responsible for the protection of his/her payment
+                                                address and
+                                                private keys).
+                                            </li>
+                                            <li>You need to join our Bounty Telegram group in order to participate in
+                                                the
+                                                Asure
+                                                Bounty program. Without joining the telegram group, you will not be
+                                                counted
+                                                on any
+                                                Bounty. <br/><br/>
+                                                The telegram link is: <a href="https://t.me/AsureNetwork"
+                                                                         target="_blank">https://t.me/AsureNetwork</a>
+                                            </li>
+                                            The Bounty telegram link is: <a href="https://t.me/AsureBounty"
+                                                                            target="_blank">https://t.me/AsureBounty</a></li>
+                                        </ul>
+
+                                        <br/>
+                                        Note: ALL BOUNTY RELATED QUESTIONS MUST BE ASKED ONLY IN OUR BOUNTY GROUP HERE:
+                                        <a href="https://t.me/AsureBounty" target="_blank">https://t.me/AsureBounty</a>
+
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                Can I buy tokens?
+                                            </strong><br/>
+                                            you have to register for
+                                            <a href="https://www.asure.network/kyc" target="_blank">KYC / Whitelisting
+                                                From</a>
+                                            and from the 1st of August you can buy tokens.
+                                        </p>
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                Is KYC needed for bounty hunters?
+                                            </strong><br/>
+                                            No. For Bounty Hunters KYC is not needed at the moment.
+                                        </p>
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                Where can I find spreadsheet?
+                                            </strong><br/>
+                                            There is no spreadsheet but we create https://asure.network/bounty site
+                                            where you can check your shares.
+                                        </p>
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                How and when you can receive your bounty tokens?
+                                            </strong><br/>
+                                            The Bounty program will run until the end of the Token Sale. The bounties
+                                            will
+                                            be paid within 30 days after the end of the Token Sale depending on the
+                                            number
+                                            of participants.
+                                            <br/><br/>
+                                            Everyone who has taken part in our Bounty program will get the tokens after
+                                            the
+                                            end of our TGE according to individual contribution.
+                                            <br/><br/>
+                                            The individual contribution will be calculated based on the number of stakes
+                                            that one earned in each campaign.
+                                            <br/><br/>
+                                            For example, after counting all activities retweets, a website will be
+                                            created
+                                            where everyone will be able to see their personal bounty stakes earned in
+                                            all
+                                            campaign.
+                                            <br/><br/>
+                                            The coins will be distributed between all members participating in the
+                                            bounty
+                                            campaign according to the number of stakes they have earned. Then we will
+                                            continue to the Telegram Campaign participants, etc.
+                                            <br/><br/>
+                                            To summarize, the stakes earned will be divided into separate
+                                            campaigns.<br/>
+                                        </p>
+
+                                        <p>
+                                            <br/>
+                                            <strong>
+                                                How many repost and share/week for FB/LinkedIn/social campaign?
+                                            </strong><br/>
+                                            per week and campaign: up to 5 activities results in 5 shares per
+                                            campaign<br/>
+                                            - comment - make one meaningful comment 70 character length (don't mention
+                                            about
+                                            Bounty)<br/>
+                                            - repost - repost one of our last posts with meaningful text and
+                                            hashtags<br/>
+                                            - like - like one of our last posts
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+            <br/><br/>
+            If you have any questions regarding the bounty campaign or if you need any assistance,
+            feel free to contact us either in the specially created Telegram group
+            <a href="https://t.me/AsureBounty" target="_blank">https://t.me/AsureBounty</a> or per email using
+            <a href="mailto:bounty@asure.io" target="_blank">bounty@asure.io</a>.
+        </div>
+    </div>
+</section>
+
+
+
